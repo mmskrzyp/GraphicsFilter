@@ -12,6 +12,8 @@ import javax.swing.JPanel;
  */
 public class ImagePanel extends JPanel {
 
+	private static final long serialVersionUID = -7694623071552188669L;
+
 	private BufferedImage image;
 
 	public void drawImage(BufferedImage image) {

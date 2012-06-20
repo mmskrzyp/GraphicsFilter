@@ -3,10 +3,14 @@ package graphic.filter.layout;
 import graphic.filter.ImageProcessor;
 import graphic.filter.Algorithms.Algorithm;
 import graphic.filter.Algorithms.AveragingFilterAlgorithm;
+import graphic.filter.Algorithms.BinaryzationFilterAlgorithm;
 import graphic.filter.Algorithms.BlueChannelAlgotithm;
 import graphic.filter.Algorithms.GreenChannelAlgotithm;
 import graphic.filter.Algorithms.LaplacianFilterAlgorithm;
+import graphic.filter.Algorithms.MaximizingFilterAlgorithm;
+import graphic.filter.Algorithms.MinimazingFilterAlgorithm;
 import graphic.filter.Algorithms.RedChannelAlgotithm;
+import graphic.filter.Algorithms.RevertColorsFilterAlgorithm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -35,14 +40,17 @@ import javax.swing.border.TitledBorder;
  */
 public class MainWindow extends JFrame {
 
+	private static final long serialVersionUID = -5897688284379748604L;
+
 	private final ImageProcessor imageProcessor = new ImageProcessor();
 
-	private final Algorithm[] algotithms = { new RedChannelAlgotithm(),
-			new GreenChannelAlgotithm(), new BlueChannelAlgotithm(),
-			new AveragingFilterAlgorithm(), new LaplacianFilterAlgorithm() };
+	private final Algorithm[] algotithms = { new AveragingFilterAlgorithm(),
+			new LaplacianFilterAlgorithm(), new MaximizingFilterAlgorithm(),
+			new MinimazingFilterAlgorithm(), new BinaryzationFilterAlgorithm(),
+			new RevertColorsFilterAlgorithm(), new RedChannelAlgotithm(),
+			new GreenChannelAlgotithm(), new BlueChannelAlgotithm() };
 
 	private final JFileChooser fileChooser = new JFileChooser();
-	private final JFileChooser saveFileChooser = new JFileChooser();
 
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu mnFile = new JMenu("File");
@@ -54,6 +62,7 @@ public class MainWindow extends JFrame {
 	private BufferedImage outputImage = null;
 	private final ImagePanel inputImagePanel = new ImagePanel();
 	private final ImagePanel outputImagePanel = new ImagePanel();
+	private final JMenuItem mntmAbout = new JMenuItem("About...");
 
 	public MainWindow() {
 		setTitle("Graphic Filter");
@@ -87,26 +96,55 @@ public class MainWindow extends JFrame {
 		jmiSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = fileChooser.showSaveDialog(MainWindow.this);
+				if (outputImage != null) {
+					int returnVal = fileChooser.showSaveDialog(MainWindow.this);
 
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = fileChooser.getSelectedFile();
-					try {
-						ImageIO.write(outputImage, "png", file);
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = fileChooser.getSelectedFile();
+						try {
+							ImageIO.write(outputImage, "png", file);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						System.out.println("Saving: " + file.getName() + "\n");
+					} else {
+						System.out.println("Save command cancelled by user.\n");
 					}
-					System.out.println("Saving: " + file.getName() + "\n");
 				} else {
-					System.out.println("Save command cancelled by user.\n");
+					JOptionPane dialog = new JOptionPane();
+					JOptionPane
+							.showMessageDialog(MainWindow.this,
+									"First you must open an image and apply filter on it!");
 				}
 			}
 		});
 		mnFile.add(jmiSave);
 		mnFile.add(new JSeparator());
-		mnFile.add(new JMenuItem("Exit"));
+		JMenuItem jmiExit = new JMenuItem("Exit");
+		jmiExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		mnFile.add(jmiExit);
 		menuBar.add(mnFile);
 		menuBar.add(mnHelp);
+		mntmAbout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				JOptionPane dialog = new JOptionPane();
+				JOptionPane
+						.showMessageDialog(
+								MainWindow.this,
+								"This is a simple application for applying filters on graphics.\n"
+										+ "Written in Java and Swing Framework.\n\n"
+										+ "Authors:\n\tMaria Skrzypek\n\tMateusz Herych",
+								"About...", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		mnHelp.add(mntmAbout);
 		getContentPane().setLayout(null);
 
 		// Przyciski
@@ -129,6 +167,9 @@ public class MainWindow extends JFrame {
 					outputImage = imageProcessor.processImage(algorithm,
 							inputImage);
 					outputImagePanel.drawImage(outputImage);
+				} else {
+					JOptionPane.showMessageDialog(MainWindow.this,
+							"First you must open an image!");
 				}
 			}
 		});
