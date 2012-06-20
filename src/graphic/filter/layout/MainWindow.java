@@ -2,7 +2,7 @@ package graphic.filter.layout;
 
 import graphic.filter.ImageProcessor;
 
-import java.awt.Canvas;
+import java.awt.Choice;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,12 +34,16 @@ public class MainWindow extends JFrame {
 	private final JMenu mnFile = new JMenu("File");
 	private final JMenu mnHelp = new JMenu("Help");
 
+	private final JButton btnOpenImage = new JButton("Open image...");
+	private final JButton btnSaveImage = new JButton("Save image...");
+
 	private BufferedImage inputImage = null;
-	private final Canvas canvas = new Canvas();
+	private final ImagePanel inputImagePanel;
+	private final ImagePanel outputImagePanel = null;
 
 	public MainWindow() {
 		setTitle("Graphic Filter");
-		setSize(600, 400);
+		setSize(628, 400);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -47,9 +51,15 @@ public class MainWindow extends JFrame {
 		menuBar.add(mnFile);
 		menuBar.add(mnHelp);
 
-		JButton btnNewButton = new JButton("Open image...");
-		btnNewButton.setBounds(10, 11, 126, 23);
-		btnNewButton.addActionListener(new ActionListener() {
+		inputImagePanel = new ImagePanel();
+		inputImagePanel.setBounds(35, 61, 126, 86);
+
+		JScrollPane scrollPane = new JScrollPane(inputImagePanel);
+		scrollPane.setBounds(10, 40, 291, 291);
+		getContentPane().add(scrollPane);
+
+		btnOpenImage.setBounds(10, 11, 110, 23);
+		btnOpenImage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int returnVal = fileChooser.showOpenDialog(MainWindow.this);
@@ -61,7 +71,7 @@ public class MainWindow extends JFrame {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					canvas.prepareImage(inputImage, MainWindow.this);
+					inputImagePanel.drawImage(inputImage);
 					System.out.println("Opening: " + file.getName() + "\n");
 				} else {
 					System.out.println("Open command cancelled by user.\n");
@@ -69,21 +79,19 @@ public class MainWindow extends JFrame {
 			}
 		});
 		getContentPane().setLayout(null);
-		getContentPane().add(btnNewButton);
+		getContentPane().add(btnOpenImage);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 45, 285, 285);
-		getContentPane().add(scrollPane);
+		JScrollPane scrollPane_1 = new JScrollPane(outputImagePanel);
+		scrollPane_1.setBounds(311, 39, 291, 291);
+		getContentPane().add(scrollPane_1);
 
-		scrollPane.setViewportView(canvas);
+		getContentPane().add(btnSaveImage);
 
-		try {
-			inputImage = ImageIO.read(new File("D:\\Pictures\\misiek.jpg"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		canvas.prepareImage(inputImage, inputImage.getWidth(),
-				inputImage.getHeight(), MainWindow.this);
+		Choice choice = new Choice();
+		choice.setBounds(165, 11, 283, 20);
+		getContentPane().add(choice);
+
+		btnSaveImage.setBounds(492, 11, 110, 23);
 	}
 
 	@Override
