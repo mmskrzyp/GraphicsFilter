@@ -111,7 +111,6 @@ public class MainWindow extends JFrame {
 						System.out.println("Save command cancelled by user.\n");
 					}
 				} else {
-					JOptionPane dialog = new JOptionPane();
 					JOptionPane
 							.showMessageDialog(MainWindow.this,
 									"First you must open an image and apply filter on it!");
@@ -133,8 +132,6 @@ public class MainWindow extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
-				JOptionPane dialog = new JOptionPane();
 				JOptionPane
 						.showMessageDialog(
 								MainWindow.this,
