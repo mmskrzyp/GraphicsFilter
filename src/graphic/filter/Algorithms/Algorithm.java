@@ -1,5 +1,7 @@
 package graphic.filter.Algorithms;
 
+import java.awt.image.BufferedImage;
+
 /**
  * 
  * @author mmskrzyp
@@ -7,6 +9,8 @@ package graphic.filter.Algorithms;
  */
 public interface Algorithm {
 
-	// TODO
+	public BufferedImage execute(BufferedImage inputImage);
+
+	public String getName();
 
 }
