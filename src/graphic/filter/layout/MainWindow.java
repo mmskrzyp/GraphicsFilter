@@ -42,6 +42,7 @@ public class MainWindow extends JFrame {
 			new AveragingFilterAlgorithm(), new LaplacianFilterAlgorithm() };
 
 	private final JFileChooser fileChooser = new JFileChooser();
+	private final JFileChooser saveFileChooser = new JFileChooser();
 
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu mnFile = new JMenu("File");
@@ -50,6 +51,7 @@ public class MainWindow extends JFrame {
 	private final JComboBox<String> comboBox = new JComboBox<String>();
 
 	private BufferedImage inputImage = null;
+	private BufferedImage outputImage = null;
 	private final ImagePanel inputImagePanel = new ImagePanel();
 	private final ImagePanel outputImagePanel = new ImagePanel();
 
@@ -85,7 +87,19 @@ public class MainWindow extends JFrame {
 		jmiSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Zapis Obrazka wynikowego do pliku
+				int returnVal = fileChooser.showSaveDialog(MainWindow.this);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					try {
+						ImageIO.write(outputImage, "png", file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println("Saving: " + file.getName() + "\n");
+				} else {
+					System.out.println("Save command cancelled by user.\n");
+				}
 			}
 		});
 		mnFile.add(jmiSave);
@@ -112,9 +126,9 @@ public class MainWindow extends JFrame {
 				if (inputImage != null) {
 					Algorithm algorithm = algotithms[comboBox
 							.getSelectedIndex()];
-					BufferedImage outImage = imageProcessor.processImage(
-							algorithm, inputImage);
-					outputImagePanel.drawImage(outImage);
+					outputImage = imageProcessor.processImage(algorithm,
+							inputImage);
+					outputImagePanel.drawImage(outputImage);
 				}
 			}
 		});
