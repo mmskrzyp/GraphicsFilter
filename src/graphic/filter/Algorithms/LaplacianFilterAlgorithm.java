@@ -14,7 +14,7 @@ public class LaplacianFilterAlgorithm extends AbstractMatrixAlgorithm {
 
 	@Override
 	public String getName() {
-		return "Laplacian Filter";
+		return "Laplacian Filter (Sharpening)";
 	}
 
 }

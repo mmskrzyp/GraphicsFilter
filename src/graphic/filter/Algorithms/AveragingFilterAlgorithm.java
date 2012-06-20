@@ -1,5 +1,6 @@
 package graphic.filter.Algorithms;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
@@ -9,28 +10,51 @@ import java.awt.image.BufferedImage;
  */
 public class AveragingFilterAlgorithm implements Algorithm {
 
+	BufferedImage inImage;
+
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {
-		for (int i = 1; i < inputImage.getWidth() - 1; i++) {
-			for (int j = 1; j < inputImage.getHeight() - 1; j++) {
-
-				int averageRGB = (inputImage.getRGB(i - 1, j - 1)
-						+ inputImage.getRGB(i, j - 1)
-						+ inputImage.getRGB(i + 1, j - 1)
-						+ inputImage.getRGB(i - 1, j)
-						+ inputImage.getRGB(i + 1, j)
-						+ inputImage.getRGB(i - 1, j + 1)
-						+ inputImage.getRGB(i, j + 1) + inputImage.getRGB(
-						i + 1, j + 1)) / 8;
-				inputImage.setRGB(i, j, averageRGB);
+		inImage = inputImage;
+		for (int i = 1; i < inImage.getWidth() - 1; i++) {
+			for (int j = 1; j < inImage.getHeight() - 1; j++) {
+				inImage.setRGB(i, j, getOutputRGB(i, j));
 			}
 		}
-		return inputImage;
+		return inImage;
+	}
+
+	private int getOutputRGB(int x, int y) {
+		int outputRed = 0, outputGreen = 0, outputBlue = 0;
+		Color color;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (i != j) {
+					color = new Color(inImage.getRGB(x + i - 1, y + j - 1));
+					outputRed += color.getRed();
+					outputGreen += color.getGreen();
+					outputBlue += color.getBlue();
+				}
+			}
+		}
+		outputRed /= 8;
+		outputGreen /= 8;
+		outputBlue /= 8;
+		return new Color(getValidColorValue(outputRed),
+				getValidColorValue(outputGreen), getValidColorValue(outputBlue))
+				.getRGB();
+	}
+
+	private int getValidColorValue(int colorValue) {
+		if (colorValue < 0)
+			return 0;
+		else if (colorValue > 255)
+			return 255;
+		return colorValue;
 	}
 
 	@Override
 	public String getName() {
-		return "Averaging Filter";
+		return "Averaging Filter (Blurring)";
 	}
 
 }
