@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
  * @author mmskrzyp
  * 
  */
-public class RevertColorsFilterAlgorithm implements Algorithm {
+public class RevertColorsFilterAlgorithm extends Algorithm {
 
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {

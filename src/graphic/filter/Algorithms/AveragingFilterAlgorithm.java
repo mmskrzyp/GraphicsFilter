@@ -8,19 +8,19 @@ import java.awt.image.BufferedImage;
  * @author mmskrzyp
  * 
  */
-public class AveragingFilterAlgorithm implements Algorithm {
+public class AveragingFilterAlgorithm extends Algorithm {
 
 	BufferedImage inImage;
 
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {
-		inImage = inputImage;
+		inImage = copyImage(inputImage);
 		for (int i = 1; i < inImage.getWidth() - 1; i++) {
 			for (int j = 1; j < inImage.getHeight() - 1; j++) {
-				inImage.setRGB(i, j, getOutputRGB(i, j));
+				inputImage.setRGB(i, j, getOutputRGB(i, j));
 			}
 		}
-		return inImage;
+		return inputImage;
 	}
 
 	private int getOutputRGB(int x, int y) {

@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
  * @author mmskrzyp
  * 
  */
-public class BinaryzationFilterAlgorithm implements Algorithm {
+public class BinaryzationFilterAlgorithm extends Algorithm {
 
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {

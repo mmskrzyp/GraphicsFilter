@@ -1,6 +1,7 @@
 package graphic.filter.layout;
 
 import graphic.filter.ImageProcessor;
+import graphic.filter.Algorithms.AddImagesAlgorithm;
 import graphic.filter.Algorithms.Algorithm;
 import graphic.filter.Algorithms.AveragingFilterAlgorithm;
 import graphic.filter.Algorithms.BinaryzationFilterAlgorithm;
@@ -9,8 +10,11 @@ import graphic.filter.Algorithms.GreenChannelAlgotithm;
 import graphic.filter.Algorithms.LaplacianFilterAlgorithm;
 import graphic.filter.Algorithms.MaximizingFilterAlgorithm;
 import graphic.filter.Algorithms.MinimazingFilterAlgorithm;
+import graphic.filter.Algorithms.MultiplyImagesAlgorithm;
 import graphic.filter.Algorithms.RedChannelAlgotithm;
 import graphic.filter.Algorithms.RevertColorsFilterAlgorithm;
+import graphic.filter.Algorithms.SharpeningFilterAlgorithm;
+import graphic.filter.Algorithms.SkeletonFilterAlgorithm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +48,9 @@ public class MainWindow extends JFrame {
 
 	private final ImageProcessor imageProcessor = new ImageProcessor();
 
-	private final Algorithm[] algotithms = { new AveragingFilterAlgorithm(),
+	private final Algorithm[] algotithms = { new SkeletonFilterAlgorithm(),
+			new AddImagesAlgorithm(), new MultiplyImagesAlgorithm(),
+			new AveragingFilterAlgorithm(), new SharpeningFilterAlgorithm(),
 			new LaplacianFilterAlgorithm(), new MaximizingFilterAlgorithm(),
 			new MinimazingFilterAlgorithm(), new BinaryzationFilterAlgorithm(),
 			new RevertColorsFilterAlgorithm(), new RedChannelAlgotithm(),
@@ -161,8 +167,34 @@ public class MainWindow extends JFrame {
 				if (inputImage != null) {
 					Algorithm algorithm = algotithms[comboBox
 							.getSelectedIndex()];
-					outputImage = imageProcessor.processImage(algorithm,
-							inputImage);
+					if (algorithm instanceof AddImagesAlgorithm
+							|| algorithm instanceof MultiplyImagesAlgorithm) {
+						BufferedImage inImage2 = null;
+						int returnVal = fileChooser
+								.showOpenDialog(MainWindow.this);
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							File file = fileChooser.getSelectedFile();
+							try {
+								inImage2 = ImageIO.read(file);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							System.out.println("Opening: " + file.getName()
+									+ "\n");
+							if (algorithm instanceof AddImagesAlgorithm)
+								outputImage = ((AddImagesAlgorithm) algorithm)
+										.execute(inputImage, inImage2);
+							if (algorithm instanceof MultiplyImagesAlgorithm)
+								outputImage = ((MultiplyImagesAlgorithm) algorithm)
+										.execute(inputImage, inImage2);
+						} else {
+							System.out
+									.println("Open command cancelled by user.\n");
+						}
+					} else {
+						outputImage = imageProcessor.processImage(algorithm,
+								inputImage);
+					}
 					outputImagePanel.drawImage(outputImage);
 				} else {
 					JOptionPane.showMessageDialog(MainWindow.this,

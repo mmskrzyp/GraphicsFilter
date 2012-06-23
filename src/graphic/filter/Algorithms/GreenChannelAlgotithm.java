@@ -3,7 +3,7 @@ package graphic.filter.Algorithms;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-public class GreenChannelAlgotithm implements Algorithm {
+public class GreenChannelAlgotithm extends Algorithm {
 
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {

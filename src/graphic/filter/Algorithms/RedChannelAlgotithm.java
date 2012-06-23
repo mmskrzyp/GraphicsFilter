@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
  * @author mmskrzyp
  * 
  */
-public class RedChannelAlgotithm implements Algorithm {
+public class RedChannelAlgotithm extends Algorithm {
 
 	@Override
 	public BufferedImage execute(BufferedImage inputImage) {
